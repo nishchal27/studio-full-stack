@@ -13,6 +13,7 @@ import {
   persistDraft,
 } from "@/features/editor/lib/draftPersistence";
 import { PageRenderer } from "@/features/preview/PageRenderer";
+import { PublishPanel } from "@/features/publish/PublishPanel";
 import { createRenderablePage } from "@/lib/validation/createRenderablePage";
 import { isSupportedSection } from "@/registry/sectionRegistry";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -156,6 +157,8 @@ export function StudioEditor({ initialDraft, role }: StudioEditorProps) {
           >
             Reset local draft
           </button>
+
+          <PublishPanel draftPage={draftPage} role={role} />
         </div>
       </aside>
 

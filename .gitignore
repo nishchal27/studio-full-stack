@@ -3,6 +3,7 @@ node_modules/
 coverage/
 playwright-report/
 test-results/
+a11y-report.json
 .env
 .env.local
 .env.*.local

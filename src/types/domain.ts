@@ -13,6 +13,14 @@ export type PublishVersion = {
   createdBy: string;
 };
 
+export type PublishSnapshot = {
+  version: string;
+  slug: string;
+  createdAt: string;
+  changelog: string[];
+  page: RenderablePage;
+};
+
 export type BaseSection<TType extends SectionType, TProps> = {
   id: string;
   type: TType;

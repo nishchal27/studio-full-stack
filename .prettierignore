@@ -1,5 +1,6 @@
 dcos/
 direction-docs/
+tree-maker/
 node_modules/
 .next/
 playwright-report/

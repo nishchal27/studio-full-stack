@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test src/tests/e2e",
+    "test:a11y": "playwright test src/tests/accessibility/a11y.spec.ts",
     "format": "prettier --check .",
     "format:write": "prettier --write ."
   },
