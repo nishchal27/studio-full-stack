@@ -19,46 +19,44 @@ export type BaseSection<TType extends SectionType, TProps> = {
   props: TProps;
 };
 
-export type HeroSection = BaseSection<
-  "hero",
-  {
-    eyebrow?: string;
-    heading: string;
-    body?: string;
-    ctaLabel?: string;
-    ctaHref?: string;
-  }
->;
+export type HeroSectionProps = {
+  eyebrow: string;
+  heading: string;
+  body: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
 
-export type FeatureGridSection = BaseSection<
-  "featureGrid",
-  {
-    heading: string;
-    features: Array<{
-      title: string;
-      body: string;
-    }>;
-  }
->;
+export type FeatureGridItem = {
+  title: string;
+  body: string;
+};
 
-export type TestimonialSection = BaseSection<
-  "testimonial",
-  {
-    quote: string;
-    authorName: string;
-    authorTitle?: string;
-  }
->;
+export type FeatureGridSectionProps = {
+  heading: string;
+  features: FeatureGridItem[];
+};
 
-export type CtaSection = BaseSection<
-  "cta",
-  {
-    heading: string;
-    body?: string;
-    label: string;
-    href: string;
-  }
->;
+export type TestimonialSectionProps = {
+  quote: string;
+  authorName: string;
+  authorTitle: string;
+};
+
+export type CtaSectionProps = {
+  heading: string;
+  body: string;
+  label: string;
+  href: string;
+};
+
+export type HeroSection = BaseSection<"hero", HeroSectionProps>;
+
+export type FeatureGridSection = BaseSection<"featureGrid", FeatureGridSectionProps>;
+
+export type TestimonialSection = BaseSection<"testimonial", TestimonialSectionProps>;
+
+export type CtaSection = BaseSection<"cta", CtaSectionProps>;
 
 export type UnsupportedSection = {
   id: string;
@@ -69,7 +67,7 @@ export type UnsupportedSection = {
 export type SupportedSection = HeroSection | FeatureGridSection | TestimonialSection | CtaSection;
 export type Section = SupportedSection | UnsupportedSection;
 
-export type Page = {
+export type RenderablePage = {
   id: string;
   slug: string;
   title: string;
@@ -77,3 +75,5 @@ export type Page = {
   updatedAt: string;
   publishVersion?: PublishVersion;
 };
+
+export type Page = RenderablePage;

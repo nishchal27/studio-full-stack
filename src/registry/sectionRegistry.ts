@@ -30,11 +30,12 @@ export type RenderableSection = SupportedSection | UnsupportedSectionData;
 
 export function SectionRenderer({ section }: { section: RenderableSection }) {
   // Registry resolution is deliberately centralized so section components never need to
-  // understand CMS-specific fallback rules.
+  // understand CMS-specific fallback rules or duplicate unknown-section handling.
   if (!isSupportedSection(section)) {
     return createElement(UnsupportedSection, { section });
   }
 
+  // The switch keeps component props exhaustive without unsafe dynamic component casts.
   switch (section.type) {
     case "hero":
       return createElement(sectionRegistry.hero, { section });

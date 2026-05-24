@@ -1,11 +1,13 @@
 import { SectionRenderer } from "@/registry/sectionRegistry";
-import type { Page } from "@/types/domain";
+import type { RenderablePage } from "@/types/domain";
 
 type PageRendererProps = {
-  page: Page;
+  page: RenderablePage;
 };
 
 export function PageRenderer({ page }: PageRendererProps) {
+  // Rendering receives the stable internal page contract only. Server adapters,
+  // future Redux drafts, and publish snapshots must normalize and validate first.
   return (
     <article aria-labelledby="page-title">
       <header className="sr-only">
