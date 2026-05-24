@@ -32,4 +32,32 @@ describe("rbac", () => {
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toContain("studio-forbidden");
   });
+
+  it("uses demo role query params before mocked role cookies", () => {
+    const request = new NextRequest("http://localhost:3000/studio/home?role=viewer", {
+      headers: {
+        cookie: "page_studio_role=publisher",
+      },
+    });
+
+    const response = proxy(request);
+
+    expect(response.status).toBe(307);
+    expect(
+      response.headers.getSetCookie().some((cookie) => cookie.includes("page_studio_role=viewer")),
+    ).toBe(true);
+  });
+
+  it("persists allowed demo roles for protected server actions", () => {
+    const request = new NextRequest("http://localhost:3000/studio/home?role=publisher");
+
+    const response = proxy(request);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.headers
+        .getSetCookie()
+        .some((cookie) => cookie.includes("page_studio_role=publisher")),
+    ).toBe(true);
+  });
 });

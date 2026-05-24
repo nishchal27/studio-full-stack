@@ -7,11 +7,15 @@ type StudioPageProps = {
   params: Promise<{
     slug: string;
   }>;
+  searchParams: Promise<{
+    role?: string;
+  }>;
 };
 
-export default async function StudioPage({ params }: StudioPageProps) {
+export default async function StudioPage({ params, searchParams }: StudioPageProps) {
   const { slug } = await params;
-  const role = await assertCanAccessStudio();
+  const { role: roleParam } = await searchParams;
+  const role = await assertCanAccessStudio(roleParam);
   const initialDraft = await loadStudioDraft(slug);
 
   return (

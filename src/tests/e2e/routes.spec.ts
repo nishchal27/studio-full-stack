@@ -28,3 +28,14 @@ test("viewer role cannot access studio", async ({ context, page }) => {
 
   await expect(page).toHaveURL("/?error=studio-forbidden");
 });
+
+test("demo role query params switch Studio permissions", async ({ page }) => {
+  await page.goto("/studio/example?role=publisher");
+
+  await expect(page.getByText("Role: publisher")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Publish draft" })).toBeEnabled();
+
+  await page.goto("/studio/example?role=viewer");
+
+  await expect(page).toHaveURL("/?error=studio-forbidden");
+});

@@ -2,14 +2,14 @@ import { cookies } from "next/headers";
 
 import { canAccessStudio, canPublish, parseUserRole } from "@/features/auth/rbac";
 
-export async function getCurrentUserRole() {
+export async function getCurrentUserRole(roleOverride?: string | null) {
   const cookieStore = await cookies();
 
-  return parseUserRole(cookieStore.get("page_studio_role")?.value);
+  return parseUserRole(roleOverride ?? cookieStore.get("page_studio_role")?.value);
 }
 
-export async function assertCanAccessStudio() {
-  const role = await getCurrentUserRole();
+export async function assertCanAccessStudio(roleOverride?: string | null) {
+  const role = await getCurrentUserRole(roleOverride);
 
   if (!canAccessStudio(role)) {
     throw new Error("Studio access requires editor permissions.");
