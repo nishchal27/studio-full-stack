@@ -16,12 +16,21 @@ Contentful
 ## Boundaries
 
 - UI components render validated domain objects only.
-- Contentful access stays isolated in `src/lib/contentful`.
+- Contentful access and CMS field normalization stay isolated in `src/lib/contentful`.
 - Runtime validation stays in `src/schemas` and `src/lib/validation`.
 - Editable client state stays in Redux slices under `src/store/slices`.
 - Unsupported section types render a fallback instead of crashing.
 
-## Phase 0 Scope
+## Rendering Flow
 
-This phase establishes contracts and setup only. Full Contentful mapping, editor controls,
-publishing, RBAC enforcement, and renderer error isolation are deferred to later phases.
+1. The preview route asks the Contentful adapter for a page by slug.
+2. The adapter maps SDK entry data into plain page-shaped data.
+3. Zod validates the normalized page before rendering.
+4. The page renderer delegates each section to the typed registry.
+5. Unknown section types render `UnsupportedSection`.
+
+Malformed known sections stop at the validation boundary and render a controlled preview state.
+
+## Deferred Scope
+
+Editor controls, publishing, drag-and-drop, and advanced auth remain deferred.

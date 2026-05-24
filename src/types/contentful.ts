@@ -1,5 +1,3 @@
-import type { Page } from "@/types/domain";
-
 export type ContentfulEnvironment = "preview" | "published";
 
 export type ContentfulPageLookup = {
@@ -7,8 +5,21 @@ export type ContentfulPageLookup = {
   environment?: ContentfulEnvironment;
 };
 
-export type ContentfulPageResult = {
-  page: Page | null;
-  source: "contentful";
-  environment: ContentfulEnvironment;
-};
+export type ContentfulAdapterErrorCode = "missingConfig" | "fetchFailed";
+
+export type ContentfulPageResult =
+  | {
+      ok: true;
+      page: unknown | null;
+      source: "contentful";
+      environment: ContentfulEnvironment;
+    }
+  | {
+      ok: false;
+      error: {
+        code: ContentfulAdapterErrorCode;
+        message: string;
+      };
+      source: "contentful";
+      environment: ContentfulEnvironment;
+    };

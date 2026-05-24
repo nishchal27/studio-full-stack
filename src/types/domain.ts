@@ -60,13 +60,14 @@ export type CtaSection = BaseSection<
   }
 >;
 
-export type Section = HeroSection | FeatureGridSection | TestimonialSection | CtaSection;
-
 export type UnsupportedSection = {
   id: string;
   type: string;
   props?: unknown;
 };
+
+export type SupportedSection = HeroSection | FeatureGridSection | TestimonialSection | CtaSection;
+export type Section = SupportedSection | UnsupportedSection;
 
 export type Page = {
   id: string;

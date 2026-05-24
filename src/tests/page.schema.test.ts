@@ -40,4 +40,24 @@ describe("pageSchema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("accepts unknown sections as renderable fallback data", () => {
+    const result = parsePage({
+      id: "page-1",
+      slug: "home",
+      title: "Home",
+      updatedAt: "2026-05-24T00:00:00.000Z",
+      sections: [
+        {
+          id: "legacy-section",
+          type: "legacyPromo",
+          props: {
+            heading: "Legacy content",
+          },
+        },
+      ],
+    });
+
+    expect(result.success).toBe(true);
+  });
 });

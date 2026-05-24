@@ -15,9 +15,10 @@ Included:
 - foundational domain types
 - Zod page and section schemas
 - typed section registry with unsupported fallback support
-- isolated Contentful adapter contracts
+- isolated Contentful adapter with preview and published client support
+- schema-driven preview rendering through `/preview/[slug]`
 - Redux Toolkit store, slices, and typed hooks
-- preview and studio route placeholders
+- studio route placeholder
 - accessibility defaults
 - Playwright and axe scaffolding
 - GitHub Actions CI skeleton
