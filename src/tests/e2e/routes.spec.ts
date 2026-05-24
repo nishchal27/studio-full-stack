@@ -6,8 +6,25 @@ test("preview placeholder renders", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Content is unavailable" })).toBeVisible();
 });
 
-test("studio placeholder renders", async ({ page }) => {
+test("studio renders and edits through the shared preview surface", async ({ page }) => {
   await page.goto("/studio/example");
 
   await expect(page.getByRole("heading", { name: "Studio: example" })).toBeVisible();
+  await page.getByLabel("Heading").fill("Edited hero heading");
+
+  await expect(page.getByRole("heading", { name: "Edited hero heading" })).toBeVisible();
+});
+
+test("viewer role cannot access studio", async ({ context, page }) => {
+  await context.addCookies([
+    {
+      name: "page_studio_role",
+      value: "viewer",
+      url: "http://localhost:3000",
+    },
+  ]);
+
+  await page.goto("/studio/example");
+
+  await expect(page).toHaveURL("/?error=studio-forbidden");
 });
