@@ -1,82 +1,127 @@
 # Page Studio
 
-A production-oriented foundation for a schema-driven Page Studio built with Next.js App
-Router, TypeScript, Redux Toolkit, Zod, TailwindCSS, shadcn/ui conventions, Playwright,
-axe accessibility checks, GitHub Actions, and Vercel deployment support.
+Production-oriented Page Studio assignment built with Next.js App Router, TypeScript, Redux Toolkit, Contentful, Zod, TailwindCSS, Playwright, axe, and GitHub Actions.
 
-## Phase 0 Status
+The implementation focuses on a schema-driven rendering architecture with deterministic editing and publishing workflows. Content enters through Contentful, is normalized and validated into a stable renderable contract, and renders through a typed section registry with graceful fallback behavior.
 
-This repository currently implements foundation and architecture only.
+## Live Demo
 
-Included:
+- Deployment: `TODO: add deployed Vercel URL`
+- Repository: `TODO: add GitHub repository URL`
 
-- strict TypeScript Next.js App Router setup
-- scalable project structure
-- foundational domain types
-- Zod page and section schemas
-- typed section registry with unsupported fallback support
-- isolated Contentful adapter with preview and published client support
-- schema-driven preview rendering through `/preview/[slug]`
-- shared renderable page pipeline for preview, future drafts, and publish snapshots
-- centralized editable field configuration for future studio controls
-- Redux Toolkit store, slices, and typed hooks
-- deterministic publishing with immutable release snapshots
-- Playwright axe accessibility report generation
-- lightweight Studio route with Redux draft editing
-- accessibility defaults
-- Playwright and axe scaffolding
-- GitHub Actions CI skeleton
-- Vercel configuration
+## Core Features
 
-Deferred:
+- Schema-driven page rendering with Zod runtime validation
+- Contentful adapter with published and preview content support
+- Shared renderable page pipeline used by Preview, Studio, and Publish
+- Typed section registry for `hero`, `featureGrid`, `testimonial`, and `cta`
+- Redux-powered Studio editing with local draft persistence
+- Deterministic SemVer publishing and changelog generation
+- Immutable release snapshots at `releases/<slug>/<version>.json`
+- Lightweight RBAC for `viewer`, `editor`, and `publisher`
+- Playwright + axe accessibility enforcement
+- GitHub Actions quality gates for lint, typecheck, unit tests, e2e, and accessibility
 
-- full Contentful implementation
-- schema renderer integration
-- advanced editor behavior
-- drag and drop
-- publishing engine
-- RBAC enforcement
-
-## Project Structure
+## Architecture Overview
 
 ```txt
-src/
-  app/
-  components/
-    sections/
-    studio/
-    shared/
-  features/
-    editor/
-    preview/
-    publish/
-    auth/
-  lib/
-    contentful/
-    semver/
-    validation/
-    accessibility/
-  registry/
-  schemas/
-  store/
-    slices/
-  tests/
-  types/
-docs/
+Contentful
+  -> adapter normalization
+  -> shared renderable pipeline
+  -> Zod validation
+  -> RenderablePage
+  -> typed section registry
+  -> Preview / Studio / Publish
 ```
 
-## Local Development
+The UI never renders raw CMS data. Preview receives Contentful data, Studio receives Redux draft data, and publishing receives draft data, but all three pass through the same renderable page contract before rendering or snapshotting.
 
-This project is configured for pnpm.
+## Screenshots
+
+### Preview Page
+
+![Preview home page](public/screenshots/preview-home.png)
+
+### Studio Editor
+
+![Studio editor page one](public/screenshots/editor-page-1.png)
+
+![Studio editor page two](public/screenshots/editor-page-2.png)
+
+### RBAC States
+
+![Publish disabled for non-publisher role](public/screenshots/publish-button-disabled-rbac.png)
+
+![Publisher role with publish access](public/screenshots/role-publisher.png)
+
+### CI and Accessibility
+
+![GitHub Actions passed](public/screenshots/github-actions-passed.png)
+
+## Publishing Workflow
+
+```txt
+Redux draft
+  -> renderable pipeline
+  -> diff engine
+  -> SemVer calculation
+  -> changelog
+  -> immutable snapshot
+```
+
+Versioning rules are deterministic:
+
+- Patch: text and prop updates
+- Minor: added sections or additive structural changes
+- Major: removed sections, section type changes, or breaking structural changes
+
+Publishing is idempotent. Identical drafts return the existing release snapshot and do not create duplicate versions.
+
+## RBAC
+
+The assignment uses an intentionally lightweight mocked role layer:
+
+- `viewer`: cannot access Studio
+- `editor`: can edit drafts, cannot publish
+- `publisher`: can edit drafts and publish immutable releases
+
+Studio access is enforced by Next proxy route protection. Publishing is enforced server-side by the protected publish action. Query-param role switching is available for walkthroughs, for example `/studio/home?role=publisher`, without adding authentication infrastructure.
+
+## Accessibility & CI
+
+Accessibility checks are integrated through Playwright and axe. The accessibility suite covers Preview, Studio, keyboard reachability, and reduced-motion behavior, then writes `a11y-report.json`.
+
+GitHub Actions validates:
+
+- `pnpm lint`
+- `pnpm typecheck`
+- `pnpm test`
+- `pnpm test:e2e`
+- `pnpm test:a11y`
+- `pnpm build`
+
+The accessibility report is uploaded as a CI artifact.
+
+## Tradeoffs & Design Decisions
+
+- Mocked auth is intentionally lightweight. The goal is authorization boundaries, not provider integration.
+- Release snapshots are local JSON files to keep publishing deterministic and reviewable without adding a database.
+- Contentful sections are JSON-driven and normalized into renderer-safe props. This keeps the CMS model simple while preserving runtime validation.
+- Preview, Studio, and Publish share the same renderable pipeline to avoid renderer/editor divergence.
+- Drag-and-drop, CMS writeback, and production auth providers were intentionally avoided to keep scope aligned with the assignment.
+- Unsupported section fallback remains explicit so unknown CMS content does not crash rendering.
+
+## Local Development
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Useful commands:
+Useful checks:
 
 ```bash
+pnpm format
 pnpm lint
 pnpm typecheck
 pnpm test
@@ -85,16 +130,28 @@ pnpm test:a11y
 pnpm build
 ```
 
-## Environment
+## Environment Variables
 
-Copy `.env.example` and provide Contentful values for preview and published page loading.
+See [.env.example](.env.example).
 
-Publish snapshots are written to `releases/<slug>/<version>.json`.
+```txt
+CONTENTFUL_SPACE_ID=
+CONTENTFUL_DELIVERY_TOKEN=
+CONTENTFUL_PREVIEW_TOKEN=
+CONTENTFUL_ENVIRONMENT=master
+```
+
+Contentful variables are used only by the isolated adapter layer. Missing configuration fails gracefully in Preview and Studio draft loading.
 
 ## Documentation
 
-- `docs/architecture.md`
-- `docs/implementation-plan.md`
-- `docs/content-model.md`
-- `docs/publishing-flow.md`
-- `docs/accessibility.md`
+- [Architecture](docs/architecture.md)
+- [Implementation Plan](docs/implementation-plan.md)
+- [Content Model](docs/content-model.md)
+- [Publishing Flow](docs/publishing-flow.md)
+- [Accessibility](docs/accessibility.md)
+- [Developer Notes](docs/developer-notes.md)
+
+## Final Notes
+
+This repository is structured as an engineering assignment submission: scoped, typed, validated, accessible, and intentionally maintainable. The implementation favors explicit contracts and deterministic workflows over feature breadth.
