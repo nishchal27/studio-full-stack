@@ -6,17 +6,17 @@ import { HeroSection } from "@/components/sections/HeroSection";
 import { TestimonialSection } from "@/components/sections/TestimonialSection";
 import { UnsupportedSection } from "@/components/sections/UnsupportedSection";
 import type {
-  Section,
   SectionType,
+  SupportedSection,
   UnsupportedSection as UnsupportedSectionData,
 } from "@/types/domain";
 
-type SectionComponent<TSection extends Section> = ComponentType<{
+type SectionComponent<TSection extends SupportedSection> = ComponentType<{
   section: TSection;
 }>;
 
 type SectionRegistry = {
-  [TType in SectionType]: SectionComponent<Extract<Section, { type: TType }>>;
+  [TType in SectionType]: SectionComponent<Extract<SupportedSection, { type: TType }>>;
 };
 
 export const sectionRegistry = {
@@ -26,9 +26,11 @@ export const sectionRegistry = {
   cta: CtaSection,
 } satisfies SectionRegistry;
 
-export type RenderableSection = Section | UnsupportedSectionData;
+export type RenderableSection = SupportedSection | UnsupportedSectionData;
 
 export function SectionRenderer({ section }: { section: RenderableSection }) {
+  // Registry resolution is deliberately centralized so section components never need to
+  // understand CMS-specific fallback rules.
   if (!isSupportedSection(section)) {
     return createElement(UnsupportedSection, { section });
   }
@@ -45,6 +47,6 @@ export function SectionRenderer({ section }: { section: RenderableSection }) {
   }
 }
 
-export function isSupportedSection(section: RenderableSection): section is Section {
+export function isSupportedSection(section: RenderableSection): section is SupportedSection {
   return section.type in sectionRegistry;
 }

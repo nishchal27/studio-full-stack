@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { sectionTypes } from "@/types/domain";
+
 const sectionBaseSchema = z.object({
   id: z.string().min(1),
 });
@@ -56,8 +58,18 @@ export const sectionSchema = z.discriminatedUnion("type", [
   ctaSectionSchema,
 ]);
 
-export type SectionSchema = z.infer<typeof sectionSchema>;
+export const unsupportedSectionSchema = sectionBaseSchema.extend({
+  type: z
+    .string()
+    .min(1)
+    .refine((type) => !(sectionTypes as readonly string[]).includes(type)),
+  props: z.unknown().optional(),
+});
+
+export const renderableSectionSchema = z.union([sectionSchema, unsupportedSectionSchema]);
+
+export type SectionSchema = z.infer<typeof renderableSectionSchema>;
 
 export function parseSection(input: unknown) {
-  return sectionSchema.safeParse(input);
+  return renderableSectionSchema.safeParse(input);
 }

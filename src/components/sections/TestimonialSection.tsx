@@ -8,7 +8,7 @@ export function TestimonialSection({ section }: TestimonialSectionProps) {
   return (
     <section aria-label="Customer testimonial" className="py-12">
       <figure className="mx-auto max-w-3xl px-6">
-        <blockquote className="text-xl font-medium tracking-normal">
+        <blockquote className="text-xl font-medium leading-relaxed tracking-normal">
           <p>{section.props.quote}</p>
         </blockquote>
         <figcaption className="mt-4 text-sm text-slate-700">

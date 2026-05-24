@@ -14,5 +14,6 @@ Supported section types:
 - `cta`
 
 Section data is represented as a discriminated union keyed by `type`. Unknown CMS section
-types are not trusted as valid domain data and are rendered through the unsupported fallback
-when encountered by the registry.
+types are normalized into fallback-safe section data and rendered through `UnsupportedSection`.
+
+Known section types with missing required props fail validation before rendering.

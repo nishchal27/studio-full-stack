@@ -12,8 +12,11 @@ export function FeatureGridSection({ section }: FeatureGridSectionProps) {
           {section.props.heading}
         </h2>
         <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {section.props.features.map((feature) => (
-            <article key={feature.title} className="rounded-md border border-slate-200 p-5">
+          {section.props.features.map((feature, index) => (
+            <article
+              key={`${feature.title}-${index}`}
+              className="rounded-md border border-slate-200 p-5"
+            >
               <h3 className="font-medium">{feature.title}</h3>
               <p className="mt-2 text-sm text-slate-700">{feature.body}</p>
             </article>

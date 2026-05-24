@@ -1,5 +1,7 @@
 import type { CtaSection as CtaSectionData } from "@/types/domain";
 
+import { LinkButton } from "@/components/shared/ui/link-button";
+
 type CtaSectionProps = {
   section: CtaSectionData;
 };
@@ -12,12 +14,9 @@ export function CtaSection({ section }: CtaSectionProps) {
           {section.props.heading}
         </h2>
         {section.props.body ? <p className="mt-3 text-slate-700">{section.props.body}</p> : null}
-        <a
-          className="mt-6 inline-flex font-medium text-sky-700 underline"
-          href={section.props.href}
-        >
+        <LinkButton className="mt-6" href={section.props.href}>
           {section.props.label}
-        </a>
+        </LinkButton>
       </div>
     </section>
   );
