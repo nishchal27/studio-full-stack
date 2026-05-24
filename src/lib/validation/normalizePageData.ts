@@ -47,11 +47,19 @@ function normalizeKnownSectionProps(type: string, props: RecordValue | null) {
       return {
         ...sectionDefaultProps.hero,
         ...props,
+        heading: readPropAlias(props, ["heading", "title"], sectionDefaultProps.hero.heading),
+        body: readPropAlias(props, ["body", "subtitle"], sectionDefaultProps.hero.body),
+        ctaHref: readPropAlias(props, ["ctaHref", "ctaUrl"], sectionDefaultProps.hero.ctaHref),
       };
     case "featureGrid":
       return {
         ...sectionDefaultProps.featureGrid,
         ...props,
+        heading: readPropAlias(
+          props,
+          ["heading", "title"],
+          sectionDefaultProps.featureGrid.heading,
+        ),
         features: Array.isArray(props?.features)
           ? readArray(props.features).map(normalizeFeature)
           : sectionDefaultProps.featureGrid.features,
@@ -60,15 +68,41 @@ function normalizeKnownSectionProps(type: string, props: RecordValue | null) {
       return {
         ...sectionDefaultProps.testimonial,
         ...props,
+        authorName: readPropAlias(
+          props,
+          ["authorName", "author"],
+          sectionDefaultProps.testimonial.authorName,
+        ),
+        authorTitle: readPropAlias(
+          props,
+          ["authorTitle", "role"],
+          sectionDefaultProps.testimonial.authorTitle,
+        ),
       };
     case "cta":
       return {
         ...sectionDefaultProps.cta,
         ...props,
+        heading: readPropAlias(props, ["heading", "title"], sectionDefaultProps.cta.heading),
+        href: readPropAlias(props, ["href", "url"], sectionDefaultProps.cta.href),
       };
     default:
       return props;
   }
+}
+
+function readPropAlias(props: RecordValue | null, keys: string[], fallback: string) {
+  if (!props) {
+    return fallback;
+  }
+
+  for (const key of keys) {
+    if (key in props) {
+      return props[key];
+    }
+  }
+
+  return fallback;
 }
 
 function normalizeFeature(feature: unknown) {
@@ -76,7 +110,7 @@ function normalizeFeature(feature: unknown) {
 
   return {
     title: readString(value?.title) ?? "",
-    body: readString(value?.body) ?? "",
+    body: readString(value?.body) ?? readString(value?.description) ?? "",
   };
 }
 

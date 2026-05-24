@@ -126,16 +126,41 @@ function normalizePageEntry(entry: unknown) {
 }
 
 function normalizeSectionEntry(entry: unknown, index: number): NormalizedSection {
+  const embeddedSection = normalizeEmbeddedSection(entry, index);
+
+  if (embeddedSection) {
+    return embeddedSection;
+  }
+
   const entryRecord = asRecord(entry);
   const fields = asRecord(entryRecord?.fields);
   const sys = asRecord(entryRecord?.sys);
   const contentType = asRecord(asRecord(sys?.contentType)?.sys);
-  const type = readString(fields?.type) ?? readString(contentType?.id) ?? "unsupported";
+  const type = normalizeSectionType(
+    readString(fields?.type) ?? readString(contentType?.id) ?? "unsupported",
+  );
 
   return {
     id: readString(sys?.id) ?? `section-${index}`,
     type,
     props: normalizeSectionProps(type, fields),
+  };
+}
+
+function normalizeEmbeddedSection(entry: unknown, index: number): NormalizedSection | null {
+  const section = asRecord(entry);
+  const rawType = readString(section?.type);
+
+  if (!section || !rawType) {
+    return null;
+  }
+
+  // Contentful may store sections as JSON objects instead of linked entries. Preserve
+  // their explicit type so valid registry keys do not collapse into the fallback path.
+  return {
+    id: readString(section.id) ?? `section-${index}`,
+    type: normalizeSectionType(rawType),
+    props: section.props,
   };
 }
 
@@ -159,6 +184,18 @@ function normalizeSectionProps(type: string, fields: Record<string, unknown> | n
     default:
       return fields.props ?? fields;
   }
+}
+
+function normalizeSectionType(type: string) {
+  const compactType = type.replace(/[\s_-]/g, "").toLowerCase();
+  const aliases: Record<string, string> = {
+    hero: "hero",
+    featuregrid: "featureGrid",
+    testimonial: "testimonial",
+    cta: "cta",
+  };
+
+  return aliases[compactType] ?? type;
 }
 
 function normalizeFeature(feature: unknown) {
