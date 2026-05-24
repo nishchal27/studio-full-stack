@@ -1,4 +1,7 @@
 import { PageShell } from "@/components/shared/PageShell";
+import { assertCanAccessStudio } from "@/features/auth/serverSession";
+import { StudioEditor } from "@/features/editor/StudioEditor";
+import { loadStudioDraft } from "@/features/editor/lib/loadStudioDraft";
 
 type StudioPageProps = {
   params: Promise<{
@@ -8,18 +11,12 @@ type StudioPageProps = {
 
 export default async function StudioPage({ params }: StudioPageProps) {
   const { slug } = await params;
+  const role = await assertCanAccessStudio();
+  const initialDraft = await loadStudioDraft(slug);
 
   return (
     <PageShell>
-      <section aria-labelledby="studio-title" className="mx-auto max-w-4xl px-6 py-16">
-        <p className="text-sm font-medium text-sky-700">Studio route</p>
-        <h1 id="studio-title" className="mt-3 text-3xl font-semibold tracking-normal">
-          Studio: {slug}
-        </h1>
-        <p className="mt-4 text-slate-700">
-          Editor controls and publishing workflows are intentionally deferred beyond Phase 0.
-        </p>
-      </section>
+      <StudioEditor initialDraft={initialDraft} role={role} />
     </PageShell>
   );
 }
