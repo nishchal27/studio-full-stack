@@ -17,6 +17,8 @@ Included:
 - typed section registry with unsupported fallback support
 - isolated Contentful adapter with preview and published client support
 - schema-driven preview rendering through `/preview/[slug]`
+- shared renderable page pipeline for preview, future drafts, and publish snapshots
+- centralized editable field configuration for future studio controls
 - Redux Toolkit store, slices, and typed hooks
 - studio route placeholder
 - accessibility defaults

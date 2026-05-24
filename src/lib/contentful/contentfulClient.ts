@@ -54,6 +54,8 @@ export function createContentfulClient(): ContentfulClient {
 
       return {
         ok: true,
+        // The adapter maps SDK-specific entries to plain data only. Shared validation
+        // still happens later so server preview, future drafts, and snapshots agree.
         page: normalizePageEntry(getFirstItem(response)),
         source: "contentful",
         environment,
@@ -123,7 +125,7 @@ function normalizePageEntry(entry: unknown) {
   };
 }
 
-function normalizeSectionEntry(entry: unknown): NormalizedSection {
+function normalizeSectionEntry(entry: unknown, index: number): NormalizedSection {
   const entryRecord = asRecord(entry);
   const fields = asRecord(entryRecord?.fields);
   const sys = asRecord(entryRecord?.sys);
@@ -131,7 +133,7 @@ function normalizeSectionEntry(entry: unknown): NormalizedSection {
   const type = readString(fields?.type) ?? readString(contentType?.id) ?? "unsupported";
 
   return {
-    id: readString(sys?.id) ?? crypto.randomUUID(),
+    id: readString(sys?.id) ?? `section-${index}`,
     type,
     props: normalizeSectionProps(type, fields),
   };

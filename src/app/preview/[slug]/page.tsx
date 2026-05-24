@@ -2,7 +2,7 @@ import { PageShell } from "@/components/shared/PageShell";
 import { PageRenderer } from "@/features/preview/PageRenderer";
 import { PreviewState } from "@/features/preview/PreviewStates";
 import { contentfulClient } from "@/lib/contentful/contentfulClient";
-import { parsePage } from "@/schemas/page.schema";
+import { createRenderablePage } from "@/lib/validation/createRenderablePage";
 
 type PreviewPageProps = {
   params: Promise<{
@@ -40,11 +40,11 @@ export default async function PreviewPage({ params, searchParams }: PreviewPageP
     );
   }
 
-  // CMS data is validated before rendering so malformed content cannot break
-  // the runtime rendering pipeline.
-  const parsedPage = parsePage(result.page);
+  // Server rendering owns the Contentful fetch and validation boundary. Later client-side
+  // draft editing should enter the same pipeline before previewing or publishing changes.
+  const renderablePage = createRenderablePage(result.page);
 
-  if (!parsedPage.success) {
+  if (!renderablePage.ok) {
     return (
       <PageShell>
         <PreviewState
@@ -57,7 +57,7 @@ export default async function PreviewPage({ params, searchParams }: PreviewPageP
 
   return (
     <PageShell>
-      <PageRenderer page={parsedPage.data} />
+      <PageRenderer page={renderablePage.page} />
     </PageShell>
   );
 }
