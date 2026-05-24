@@ -1,10 +1,10 @@
 # Publishing Flow
 
-Publishing is out of scope for Phase 0. The foundation reserves contracts for immutable
-publish versions so later phases can add deterministic SemVer behavior without reshaping
-the domain model.
+Publishing creates immutable JSON snapshots from the shared `RenderablePage` contract.
 
-Planned rules:
+Snapshots are written to `releases/<slug>/<version>.json` by default.
+
+Version rules:
 
 - Patch: text or prop updates.
 - Minor: additive structural changes.

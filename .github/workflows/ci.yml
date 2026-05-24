@@ -39,5 +39,19 @@ jobs:
       - name: Unit tests
         run: pnpm test
 
-      - name: Playwright scaffold
+      - name: Install Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Playwright
         run: pnpm test:e2e
+
+      - name: Accessibility
+        run: pnpm test:a11y
+
+      - name: Upload accessibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-report
+          path: a11y-report.json
+          if-no-files-found: ignore

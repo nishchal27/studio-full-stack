@@ -20,7 +20,9 @@ Included:
 - shared renderable page pipeline for preview, future drafts, and publish snapshots
 - centralized editable field configuration for future studio controls
 - Redux Toolkit store, slices, and typed hooks
-- studio route placeholder
+- deterministic publishing with immutable release snapshots
+- Playwright axe accessibility report generation
+- lightweight Studio route with Redux draft editing
 - accessibility defaults
 - Playwright and axe scaffolding
 - GitHub Actions CI skeleton
@@ -79,13 +81,15 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm test:e2e
+pnpm test:a11y
 pnpm build
 ```
 
 ## Environment
 
-Copy `.env.example` and provide Contentful values when the adapter is implemented in a
-later phase.
+Copy `.env.example` and provide Contentful values for preview and published page loading.
+
+Publish snapshots are written to `releases/<slug>/<version>.json`.
 
 ## Documentation
 

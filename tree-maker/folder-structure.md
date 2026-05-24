@@ -20,6 +20,7 @@
 ├── 📄 pnpm-lock.yaml
 ├── 📄 postcss.config.mjs
 ├── 📄 prettier.config.mjs
+└── 📂 releases/
 └── 📂 src/
 │  └── 📂 app/
 │    ├── 📄 globals.css
@@ -65,13 +66,21 @@
 │      ├── 📄 PageRenderer.tsx
 │      ├── 📄 PreviewStates.tsx
 │    └── 📂 publish/
+│      ├── 📄 PublishPanel.tsx
 │      ├── 📄 actions.ts
+│      ├── 📄 publishDraft.ts
+│      ├── 📄 releaseStore.ts
 │  └── 📂 lib/
 │    └── 📂 accessibility/
 │      ├── 📄 focus.ts
 │    └── 📂 contentful/
 │      ├── 📄 contentfulClient.ts
 │    └── 📂 semver/
+│      ├── 📄 calculateVersionChange.ts
+│      ├── 📄 compareSections.ts
+│      ├── 📄 createChangelog.ts
+│      ├── 📄 generateVersion.ts
+│      ├── 📄 stableSerialize.ts
 │    ├── 📄 utils.ts
 │    └── 📂 validation/
 │      ├── 📄 createRenderablePage.ts
@@ -106,9 +115,11 @@
 │      ├── 📄 pages.ts
 │      ├── 📄 sections.ts
 │    ├── 📄 page.schema.test.ts
+│    ├── 📄 publish.test.ts
 │    ├── 📄 rbac.test.ts
 │    ├── 📄 renderablePage.test.ts
 │    ├── 📄 sectionRegistry.test.tsx
+│    ├── 📄 semver.test.ts
 │  └── 📂 types/
 │    ├── 📄 contentful.ts
 │    ├── 📄 domain.ts
